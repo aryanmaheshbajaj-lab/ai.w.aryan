@@ -718,6 +718,7 @@ async def delete_me(patient: dict = Depends(require_patient)):
     return {"success": True}
 
 # ---------------- Doctor overview & analytics ----------------
+# ---------------- Doctor overview & analytics ----------------
 @api_router.get("/doctor/overview")
 async def overview(doctor: dict = Depends(require_doctor)):
     today = now_utc().date().isoformat()
@@ -737,24 +738,30 @@ async def analytics(doctor: dict = Depends(require_doctor)):
     month_ivr = await db.appointments.count_documents({**month_q, "source": "ivr"})
     month_cancelled = await db.appointments.count_documents({**month_q, "status": "cancelled"})
     month_completed = await db.appointments.count_documents({**month_q, "status": "completed"})
+    
     # Busiest day of week + busiest time
     docs = await db.appointments.find(month_q, {"_id": 0, "date": 1, "time": 1, "patient_phone": 1, "status": 1}).to_list(5000)
     by_dow = [0] * 7
     by_hour = {}
-    phone_count: dict = {}
+    phone_count = {}
+    
     for a in docs:
         try:
-            dt = datetime.strptime(a["date"], "%Y-%m-%d").date()
+            dt = datetime.strptime(a["date"], "%Y-%m-%d")
             by_dow[dt.weekday()] += 1
         except Exception:
             pass
         h = a.get("time", "00:00").split(":")[0]
         by_hour[h] = by_hour.get(h, 0) + 1
-        phone_count[a["patient_phone"]] = phone_count.get(a["patient_phone"], 0) + 1
+        
+        if "patient_phone" in a:
+            phone_count[a["patient_phone"]] = phone_count.get(a["patient_phone"], 0) + 1
+            
     returning = sum(1 for v in phone_count.values() if v > 1)
     new_p = sum(1 for v in phone_count.values() if v == 1)
     cancellation_rate = (month_cancelled / month_total * 100) if month_total else 0
-    no_show_rate = 0  # not tracked separately
+    no_show_rate = 0  
+    
     return {
         "month_total": month_total,
         "month_app": month_app,
@@ -763,7 +770,7 @@ async def analytics(doctor: dict = Depends(require_doctor)):
         "month_cancelled": month_cancelled,
         "cancellation_rate": round(cancellation_rate, 1),
         "no_show_rate": no_show_rate,
-        "by_dow": by_dow,  # Mon..Sun
+        "by_dow": by_dow,  
         "by_hour": [{"hour": k, "count": v} for k, v in sorted(by_hour.items())],
         "new_patients": new_p,
         "returning_patients": returning,
@@ -825,7 +832,6 @@ async def list_waitlist(doctor: dict = Depends(require_doctor)):
 
 @api_router.post("/waitlist")
 async def add_waitlist(payload: WaitlistCreate, doctor: Optional[dict] = Depends(optional_doctor)):
-    # Patients or IVR (via doctor token) can add; bare anonymous calls accepted only with IVR secret-check via /ivr/waitlist
     phone = normalize_phone(payload.parent_phone)
     obj = {
         "id": str(uuid.uuid4()),
@@ -898,7 +904,6 @@ async def ivr_check(req: IvrCheck, ok: bool = Depends(require_ivr)):
         if existing:
             return {"available": False, "reason": "Slot taken", "next_slots": (await next_slots(req.date, req.time, 3))["slots"]}
         return {"available": True, "date": req.date, "time": req.time, "fee": c.get("consultation_fee", 400)}
-    # No specific time -> return list of free slots for date
     booked_cursor = db.appointments.find({"date": req.date, "status": "confirmed"}, {"_id": 0, "time": 1})
     booked = {a["time"] async for a in booked_cursor}
     free = [t for t in slot_list(c) if t not in booked]
@@ -968,7 +973,7 @@ async def ivr_save_recording(req: IvrRecording, ok: bool = Depends(require_ivr))
 # ---------------- Health ----------------
 @api_router.get("/")
 async def root():
-    return {"message": "ClinicBot API"}
+    return {"status": "success", "message": "ClinicBot AI Backend is active and connected to MongoDB!"}
 
 app.include_router(api_router)
 app.add_middleware(SecurityHeadersMiddleware)
