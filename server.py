@@ -43,7 +43,8 @@ db = client[os.environ['DB_NAME']]
 
 VOICELINK_REGISTRATION_PASSWORD = os.environ.get('VOICELINK_REGISTRATION_PASSWORD', '')
 VOICELINK_USERNAME = os.environ.get('VOICELINK_USERNAME', '')
-VOICELINK_SERVER= os.environ.get('TWILIO_PHONE_NUMBER', '')
+VOICELINK_SERVER-PORT= os.environ.get('vOICELINK_SERVER-PORT', '')
+VOICELINK_SIP_SERVER = os.environ.get('VOICELINK_SIP_SERVER','')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'change-me')
 JWT_ALG = os.environ.get('JWT_ALGORITHM', 'HS256')
 DOCTOR_EMAIL = os.environ.get('DOCTOR_EMAIL', 'doctor@sharma.com')
@@ -52,8 +53,8 @@ IVR_SECRET = os.environ.get('IVR_SECRET', 'change-me-ivr')
 OTP_DEV_MODE = os.environ.get('OTP_DEV_MODE', 'true').lower() == 'true'
 
 try:
-    from twilio.rest import Client as TwilioClient
-    twilio_client = TwilioClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN) if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN else None
+    from voicelink.rest import Client as VoicelinkClient
+    voicelink_client = VoicelinkClient(VOICELINK_USERNAME,VOICELINK_REGISTRATION_PASSWORD) if VOICELINK_USERNAME and VOICELINK_REGISTRATION_PASSWORD else None
 except Exception:
     twilio_client = None
 
@@ -172,10 +173,10 @@ def slot_list(clinic) -> List[str]:
     return slots
 
 async def send_sms(phone: str, msg: str) -> bool:
-    if not twilio_client or not TWILIO_PHONE_NUMBER:
+    if not voicelink_client or not VOICELINK_PHONE_NUMBER:
         return False
     try:
-        twilio_client.messages.create(body=msg, from_=TWILIO_PHONE_NUMBER, to=normalize_phone(phone))
+        voicelink_client.messages.create(body=msg, from_=TWILIO_PHONE_NUMBER, to=normalize_phone(phone))
         return True
     except Exception as e:
         logger.error(f"SMS failed: {e}")
