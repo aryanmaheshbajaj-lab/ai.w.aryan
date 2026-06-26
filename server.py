@@ -971,7 +971,7 @@ async def ivr_save_recording(req: IvrRecording, ok: bool = Depends(require_ivr))
     return {"success": True, "id": obj["id"]}
 
 # ---------------- Health ----------------
-@api_router.get("/")
+@app.get("/")
 async def root():
     return {"status": "success", "message": "ClinicBot AI Backend is active and connected to MongoDB!"}
 
