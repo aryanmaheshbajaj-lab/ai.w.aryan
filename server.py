@@ -41,9 +41,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
-TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER', '')
+VOICELINK_REGISTRATION_PASSWORD = os.environ.get('VOICELINK_REGISTRATION_PASSWORD', '')
+VOICELINK_USERNAME = os.environ.get('VOICELINK_USERNAME', '')
+VOICELINK_SERVER= os.environ.get('TWILIO_PHONE_NUMBER', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'change-me')
 JWT_ALG = os.environ.get('JWT_ALGORITHM', 'HS256')
 DOCTOR_EMAIL = os.environ.get('DOCTOR_EMAIL', 'doctor@sharma.com')
