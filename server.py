@@ -43,7 +43,7 @@ db = client[os.environ['DB_NAME']]
 
 VOICELINK_REGISTRATION_PASSWORD = os.environ.get('VOICELINK_REGISTRATION_PASSWORD', '')
 VOICELINK_USERNAME = os.environ.get('VOICELINK_USERNAME', '')
-VOICELINK_SERVER-PORT= os.environ.get('vOICELINK_SERVER-PORT', '')
+VOICELINK_SERVER_PORT= os.environ.get('vOICELINK_SERVER_PORT', '')
 VOICELINK_SIP_SERVER = os.environ.get('VOICELINK_SIP_SERVER','')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'change-me')
 JWT_ALG = os.environ.get('JWT_ALGORITHM', 'HS256')
