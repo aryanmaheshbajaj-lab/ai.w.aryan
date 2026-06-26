@@ -56,7 +56,7 @@ try:
     from voicelink.rest import Client as VoicelinkClient
     voicelink_client = VoicelinkClient(VOICELINK_USERNAME,VOICELINK_REGISTRATION_PASSWORD) if VOICELINK_USERNAME and VOICELINK_REGISTRATION_PASSWORD else None
 except Exception:
-    twilio_client = None
+    voicelink_client = None
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
