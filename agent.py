@@ -28,10 +28,17 @@ class RiyaReceptionist(Agent):
         )
 
 @app.post("/webhook")
-async def webhook(data: dict):
-    logger.info("Call received from Voicelink")
-    # Start the agent
-    return JSONResponse({"status": "ok"})
+async def entrypoint(ctx: JobContext):
+    logger.info("Riya starting for new call")
+    await ctx.connect()
+    session = AgentSession()
+    await session.start(agent=RiyaReceptionist(), room=ctx.room)
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+   
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=lambda ctx: AgentSession().start(RiyaReceptionist(), room=ctx.room)))
