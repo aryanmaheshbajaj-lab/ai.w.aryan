@@ -28,11 +28,9 @@ class RiyaReceptionist(Agent):
         )
 
 @app.post("/webhook")
-async def entrypoint(ctx: JobContext):
-    logger.info("Riya starting for new call")
-    await ctx.connect()
-    session = AgentSession()
-    await session.start(agent=RiyaReceptionist(), room=ctx.room)
+async def webhook():
+    logger.info("Call received from Voicelink")
+    return {"status": "ok", "message": "Riya is ready"}
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
