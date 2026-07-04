@@ -38,7 +38,7 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 MONGO_URL = os.environ.get('MONGO_URL', '')
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(MONGO_URL)
 db = client[os.environ['DB_NAME']]
 
 VOICELINK_REGISTRATION_PASSWORD = os.environ.get('VOICELINK_REGISTRATION_PASSWORD', '')
