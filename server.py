@@ -977,6 +977,10 @@ async def root():
 
 @app.websocket("/something")
 async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    await websocket.close()
+
+app.include_router(api_router)
 
 app.include_router(api_router)
 app.add_middleware(SecurityHeadersMiddleware)
