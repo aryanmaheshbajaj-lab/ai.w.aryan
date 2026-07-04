@@ -23,4 +23,4 @@ async def entrypoint(ctx: JobContext):
     await ctx.run_agent(agent)
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, max_concurrent_jobs=5))
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
