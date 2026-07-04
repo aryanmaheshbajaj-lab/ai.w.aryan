@@ -975,6 +975,9 @@ async def ivr_save_recording(req: IvrRecording, ok: bool = Depends(require_ivr))
 async def root():
     return {"status": "success", "message": "ClinicBot AI Backend is active and connected to MongoDB!"}
 
+@app.websocket("/something")
+async def websocket_endpoint(websocket: WebSocket):
+
 app.include_router(api_router)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(CORSMiddleware, allow_credentials=True, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
