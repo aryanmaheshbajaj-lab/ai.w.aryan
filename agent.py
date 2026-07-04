@@ -7,26 +7,20 @@ from livekit.plugins import sarvam
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("Riya-IVR")
-
-class RiyaReceptionist:
-    def __init__(self):
-        self.instructions = """You are Riya, a polite and friendly AI receptionist at Little Stars Child Clinic. 
-        Speak naturally in Hindi or English. Help with appointments, greetings, and basic queries."""
 
 async def entrypoint(ctx: JobContext):
-    logger.info("New call received - Riya starting")
+    logging.info("=== New Call Received - Riya Starting ===")
     
     await ctx.connect()
-
+    
     agent = sarvam.Agent(
-        instructions=RiyaReceptionist().instructions,
+        instructions="You are Riya, a friendly and polite receptionist at Little Stars Child Clinic. Greet the caller warmly, ask how you can help, and handle appointment booking.",
         stt=sarvam.STT(),
         llm=sarvam.LLM(),
         tts=sarvam.TTS(),
     )
-
+    
     await ctx.run_agent(agent)
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, max_concurrent_jobs=5))
