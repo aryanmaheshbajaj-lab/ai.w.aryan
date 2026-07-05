@@ -1,16 +1,20 @@
 import os
+import logging
 from dotenv import load_dotenv
 from livekit.agents import JobContext, WorkerOptions, cli
 from livekit.plugins import sarvam
 
 load_dotenv()
 
+logging.basicConfig(level=logging.INFO)
+
 async def entrypoint(ctx: JobContext):
     logging.info("Worker starting...")
     logging.info(f"Connecting to LiveKit: {os.getenv('LIVEKIT_URL')}")
+    
     await ctx.connect()
+    
     logging.info("Connected to LiveKit successfully")
-    # rest of the code
     
     agent = sarvam.Agent(
         instructions="You are Riya, receptionist at Little Stars Clinic. Greet the caller and help them.",
