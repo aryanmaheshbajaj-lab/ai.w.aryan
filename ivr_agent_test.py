@@ -1,6 +1,6 @@
 import requests
 
-BACKEND_URL = "https://ai-w-aryan.onrender.com"
+BACKEND_URL = "https://aiwaryan-production.up.railway.app"
 DOCTOR_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkb2N0b3JAc2hhcm1hLmNvbSIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE3ODI1ODUwODAsImV4cCI6MTc4MjU4Njg4MH0.79pTU4t_yAUwt0Mog4F7IPKd0GZ0qU5dTg2oJ6y7vYE"   # Paste your doctor token
 
 def test_booking():
