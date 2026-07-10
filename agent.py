@@ -13,8 +13,9 @@ async def entrypoint(ctx: JobContext):
     await ctx.connect()
     logging.info("Connected to room")
 
-    agent = sarvam.Agent(
-        instructions="You are Riya, polite receptionist.",
+    # Correct way for Sarvam
+    agent = sarvam.RealtimeAgent(
+        instructions="You are Riya, polite receptionist at Little Stars Clinic. Greet and help with appointments.",
         stt=sarvam.STT(),
         llm=sarvam.LLM(),
         tts=sarvam.TTS(),
