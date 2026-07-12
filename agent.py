@@ -1,25 +1,27 @@
 import os
 import logging
 from dotenv import load_dotenv
-from livekit.agents import JobContext, WorkerOptions, cli
-from livekit.plugins import sarvam
+from fastapi import FastAPI, Request
+from livekit.plugins import sarvam  # Keep Sarvam for voice
 
 load_dotenv()
 
+app = FastAPI(title="Riya Simple IVR")
+
 logging.basicConfig(level=logging.INFO)
 
-async def entrypoint(ctx: JobContext):
-    logging.info("Riya is answering the call...")
-    await ctx.connect()
-    logging.info("Call connected successfully")
+@app.get("/")
+async def health():
+    return {"status": "Riya Simple IVR is running"}
 
-    agent = sarvam.RealtimeAgent(
-        instructions="You are Riya, friendly receptionist at Little Stars Clinic. Help with appointments.",
-        stt=sarvam.STT(),
-        llm=sarvam.LLM(),
-        tts=sarvam.TTS(),
-    )
-    await ctx.run_agent(agent)
+# Webhook for Voicelink
+@app.post("/webhook")
+async def voicelink_webhook(request: Request):
+    data = await request.json()
+    logging.info(f"Received call: {data}")
+    # Here we can trigger Sarvam voice response
+    return {"action": "speak", "text": "Hello, this is Riya from Little Stars Clinic. How can I help you today?"}
 
 if __name__ == "__main__":
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8080)
