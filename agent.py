@@ -12,24 +12,23 @@ app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 
 async def entrypoint(ctx: JobContext):
-    logging.info("Riya worker starting...")
+    logging.info("=== Riya Voice Agent Starting ===")
     await ctx.connect()
-    logging.info("Connected to room")
+    logging.info("Connected to LiveKit room")
     
     agent = sarvam.RealtimeAgent(
-        instructions="""You are Riya, a polite and professional receptionist at Little Stars Clinic.
-        Help patients with appointment booking, doctor availability, and general inquiries.
-        Be helpful, clear, and friendly. Always confirm details before booking.""",
+        instructions="""You are Riya, a polite, professional, and friendly receptionist at Little Stars Child Clinic.
+        Help patients book appointments, check availability, and answer general queries.
+        Always be clear, helpful, and confirm details before booking.""",
         stt=sarvam.STT(),
         llm=sarvam.LLM(),
         tts=sarvam.TTS(),
     )
     await ctx.run_agent(agent)
 
-# Webhook for Voicelink
-@app.post("/webhook")
-async def webhook():
-    return {"status": "ok"}
+@app.get("/")
+async def health():
+    return {"status": "Riya Voice Agent is running"}
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
